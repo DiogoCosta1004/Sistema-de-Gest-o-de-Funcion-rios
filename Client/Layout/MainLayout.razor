@@ -1,0 +1,32 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <AuthorizeView>
+                <Authorized>
+                    <a class="btn btn-none text-danger" @onclick="LogoutClicked">Sair</a>
+                </Authorized>
+            </AuthorizeView>  
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+<Syncfusion.Blazor.Popups.SfDialogProvider />
+
+@code {
+    async Task LogoutClicked()
+    {
+        var logoutModel = new UserSession();
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
+        await customAuthStateProvider.UpdateAuthenticationState(logoutModel);
+		NavManager.NavigateTo("/", forceLoad: true);
+	}
+}

@@ -1,0 +1,91 @@
+﻿@page "/identity/account/registro"
+@using Client.Pages.OtherPages
+@using Syncfusion.Blazor.Popups
+@inject SfDialogService DialogService
+@layout AuthenticationLayout
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-4"></div>
+        <div class="col-lg-4">
+            <EditForm Enhance Model="User" OnValidSubmit="HandleRegistration">
+                <DataAnnotationsValidator />
+                <div class="card gbg-dark d-flex justify-content-center" style="opacity:0.5; margin-top:50%; border-radius:10px; color: black; font-weight:bold">
+                    <div class="card-header text-center fs-5">Registre a sua conta</div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-4"></div>
+                            <div class="col-lg-4 col-md-4 col-sm-4 d-flex justify-content-center">
+                                <img style="border-radius:20px" src="../images/companylogos/logogroup.png" height="50" width="50" />
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4"></div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label">Nome Completo</label>
+                            <InputText @bind-Value="User.NomeCompleto" class="form-control"></InputText>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label class="form-label">Email</label>
+                            <InputText @bind-Value="User.Email" class="form-control"></InputText>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label class="form-label">Senha</label>
+                            <input type="password" @bind="User.Senha" class="form-control" />
+                        </div>
+                        <div class="form-group mt-3">
+                            <label class="form-label">Confirmar Senha</label>
+                            <input type="password" @bind="User.ConfirmarSenha" class="form-control" />
+                        </div>
+                        <div class="form-group mt-3">
+                            @if (ShowLoadingButton)
+                            {
+                            <Client.Pages.OtherPages.ButtonLoadingSpinner></Client.Pages.OtherPages.ButtonLoadingSpinner>
+                            }
+                            else 
+                            {
+                            <button class="btn btn-outline-primary float-end" type="submit">Registro</button>
+                            }
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="text-center">
+                            Já possui uma conta?
+                            <a class="btn-link" href="identity/account/login">Faça Login</a>
+                        </span>
+                        <ValidationSummary />
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+        <div class="col-lg-4">
+
+        </div>
+    </div>
+</div>
+
+@code {
+    public bool ShowLoadingButton { get; set; } = false;
+    Registro User = new();
+    async Task HandleRegistration()
+    {
+        ShowLoadingButton = true;
+        var result = await accountService.CreateAsync(User);
+        if (result.Flag)
+        {
+            await DisplayDialog(result.Message, "Success");
+            User = new();
+        }
+        else
+        {
+			await DisplayDialog(result.Message, "Alert!");
+        }
+        ShowLoadingButton = false;
+    }
+
+    private async Task DisplayDialog(string content, string title)
+    {
+        await DialogService.AlertAsync(content, title);
+    }
+}
