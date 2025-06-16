@@ -1,24 +1,27 @@
-﻿namespace BaseLibrary.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BaseLibrary.Entities
 {
-    public class Funcionario 
+    public class Funcionario  : BaseEntity
     {
-        public int Id { get; set; }
-        public string? Nome { get; set; }
-        public string? CivilId { get; set; }
-        public string? NumeroArquivo { get; set; }
-        public string? NomeCompleto { get; set; }
-        public string? NomeDoTrabalho { get; set; }
-        public string? Endereco { get; set; }
-        public string? NumeroTelefone { get; set; }
-        public string? Foto { get; set; }
+        [Required]
+        public string? CivilId { get; set; } = string.Empty;
+        [Required]
+        public string? NumeroArquivo { get; set; } = string.Empty;
+        [Required]
+        public string? NomeCompleto { get; set; } = string.Empty;
+        [Required]
+        public string? NomeDoTrabalho { get; set; } = string.Empty;
+        [Required]
+        public string? Endereco { get; set; } = string.Empty;
+        [Required, DataType(DataType.PhoneNumber)]
+        public string? NumeroTelefone { get; set; } = string.Empty;
+        [Required]
+        public string? Foto { get; set; } = string.Empty;
         public string? Outros { get; set; }  
 
        // Relationship : N para 1
 
-        public DepartamentoGeral? DepartamentoGeral { get; set; }
-        public int DepartamentoGeralId { get; set; }
-        public Departamento? Departamento { get; set; }
-        public int DepartamentoId { get; set; }
         public Filial? Filial { get; set; }
         public int FilialId { get; set; }
         public Cidade? Cidade { get; set; }

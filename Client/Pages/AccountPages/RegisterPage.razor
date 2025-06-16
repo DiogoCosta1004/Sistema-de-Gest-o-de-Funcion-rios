@@ -41,11 +41,11 @@
                         <div class="form-group mt-3">
                             @if (ShowLoadingButton)
                             {
-                            <Client.Pages.OtherPages.ButtonLoadingSpinner></Client.Pages.OtherPages.ButtonLoadingSpinner>
+                                <Client.Pages.OtherPages.ButtonLoadingSpinner></Client.Pages.OtherPages.ButtonLoadingSpinner>
                             }
-                            else 
+                            else
                             {
-                            <button class="btn btn-outline-primary float-end" type="submit">Registro</button>
+                                <button class="btn btn-outline-primary float-end" type="submit">Registro</button>
                             }
                         </div>
                     </div>
@@ -68,6 +68,13 @@
 @code {
     public bool ShowLoadingButton { get; set; } = false;
     Registro User = new();
+
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
+    protected async override Task OnInitializedAsync()
+    {
+        await CheckUserAuthentication();
+    }
+
     async Task HandleRegistration()
     {
         ShowLoadingButton = true;
@@ -79,7 +86,7 @@
         }
         else
         {
-			await DisplayDialog(result.Message, "Alert!");
+            await DisplayDialog(result.Message, "Alert!");
         }
         ShowLoadingButton = false;
     }
@@ -87,5 +94,14 @@
     private async Task DisplayDialog(string content, string title)
     {
         await DialogService.AlertAsync(content, title);
+    }
+
+    private async Task CheckUserAuthentication()
+    {
+        var user = (await AuthenticationState).User;
+        bool isUserAuthenticated = user.Identity!.IsAuthenticated;
+
+        if (isUserAuthenticated)
+            NavManager.NavigateTo("/home/dashboard");
     }
 }
