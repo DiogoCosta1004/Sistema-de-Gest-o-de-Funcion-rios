@@ -14,7 +14,8 @@ namespace ServerLibrary.Data
         public DbSet<Filial> Filiais { get; set; }
 
         public DbSet<Town> Towns { get; set; }
-        //public DbSet<Cidade> Cidades { get; set; }
+        public DbSet<Pais> Paises { get; set; }
+        public DbSet<Cidade> Cidades { get; set; }
 
         //Parte de autenticação
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
@@ -32,9 +33,6 @@ namespace ServerLibrary.Data
         public DbSet<Sanction> Sanctions { get; set; }
         public DbSet<SanctionType> SanctionTypes { get; set; }  
         public DbSet<Doctor> Doctors { get; set; }
-
-
-
     }
 }
 

@@ -1,6 +1,6 @@
 ﻿namespace BaseLibrary.Entities
 {
-    public class VacationType
+    public class VacationType : BaseEntity
     {
         public List<Vacation>? Vacations { get; set; }
     }
