@@ -19,7 +19,7 @@ namespace Server.Controllers
             return Ok(await genericRepositoryInterface.DeleteById(id));
         }
 
-        [HttpDelete("single/{id}")]
+        [HttpGet("single/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             if (id <= 0)

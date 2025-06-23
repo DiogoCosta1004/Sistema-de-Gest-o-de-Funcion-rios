@@ -9,47 +9,66 @@
 					<div class="card-header">
 						<h4 class="float-start">Departmento Geral </h4>
 						<button class="btn btn-outline-success float-end" @onclick="OpenDialog">
-							<i class="bi bi-plus-circle-dotted"></i>Adicionar Departamento</button>
+							<i class="bi bi-plus-circle-dotted"></i>Adicionar Departamento
+						</button>
 					</div>
-					<div class="card-body">
-						<table class="table table-striped">
-							<thead>
-								<tr>
-									<th scope="col">#</th>
-									<th scope="col">First</th>
-									<th scope="col">Last</th>
-									<th scope="col">Handle</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<th scope="row">1</th>
-									<td>Mark</td>
-									<td>Otto</td>
-									<td>mdo</td>
-								</tr>
-								<tr>
-									<th scope="row">2</th>
-									<td>Jacob</td>
-									<td>Thornton</td>
-									<td>fat</td>
-								</tr>
-								<tr>
-									<th scope="row">3</th>
-									<td colspan="2">Larry hte bird</td>
-									<td>twitter</td>
-								</tr>
-							</tbody>
-						</table>
+					<div class=" card-header" style=" max-height:580px; overflow-x:hidden; overflow-y:scroll;">
+						<div class="card-body">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th scope="col">#</th>
+										<th scope="col">Id</th>
+										<th scope="col">Departamento Geral</th>
+										<th scope="col">Ação</th>
+									</tr>
+								</thead>
+								<tbody>
+									@if (GeneralDepartments is not null)
+									{
+										int count = 1;
+										foreach (var item in GeneralDepartments)
+										{
+											<tr>
+												<th scope="row">@count</th>
+												<td>@item.Id</td>
+												<td>@item.Nome</td>
+												<td>
+													<i class="bi bi-pencil text-info" id="cursorStyle" @onclick="() => EditClicked(item)"></i>
+													<i class="bi bi-trash text-danger" id="cursorStyle" @onclick="() => DeleteClicked(item)"></i>
+												</td>
+											</tr>
+											count++;
+										}
+									}
+									else
+									{
+										<tr>
+											<td colspan="4"><div class="alert alert-info text-center">Nenhum departamento geral adicionado ainda!</div></td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 }
+
+<style>
+	#cursorStyle {
+		cursor: pointer;
+	}
+</style>
+
 <GeneralDepartmentDialog @ref="generalDepartmentDialog"
-HandleSaveOperationEvent="HandleSaveOperationEvent"
+						 HandleSaveOperationEvent="HandleSaveOperationEvent"
 						 GeneralDepartment="CurrentGeneralDepartment " />
+
+
+
 @code {
 	GeneralDepartmentDialog? generalDepartmentDialog;
 	DepartamentoGeral CurrentGeneralDepartment = new();
@@ -73,7 +92,7 @@ HandleSaveOperationEvent="HandleSaveOperationEvent"
 		generalDepartmentDialog?.OpenDialog();
 	}
 
-	private async Task HandleSaveOperationEvent(DepartamentoGeral generalDepartment) 
+	private async Task HandleSaveOperationEvent(DepartamentoGeral generalDepartment)
 	{
 		bool successCheck = false;
 		if (generalDepartment.Id > 0)
@@ -81,12 +100,12 @@ HandleSaveOperationEvent="HandleSaveOperationEvent"
 			var result = await generalDepartmentService.Update(generalDepartment, Constants.GeneralDepartmentBaseUrl);
 			successCheck = await DisplayMessage(result.Flag, result.Message);
 		}
-		else 
+		else
 		{
 			var response = await generalDepartmentService.Insert(generalDepartment, Constants.GeneralDepartmentBaseUrl);
 			successCheck = await DisplayMessage(response.Flag, response.Message);
 		}
-		if (successCheck) 
+		if (successCheck)
 		{
 			CurrentGeneralDepartment = new();
 			await GetGeneralDepartments();
@@ -94,21 +113,36 @@ HandleSaveOperationEvent="HandleSaveOperationEvent"
 		}
 	}
 
-	private void EditClicked(DepartamentoGeral dep) 
+	private void EditClicked(DepartamentoGeral dep)
 	{
 		generalDepartmentDialog?.ChangeTitle("Update");
 		CurrentGeneralDepartment = dep;
 		OpenDialog();
 	}
 
-	private async Task<bool> DisplayMessage(bool flag, string message) 
+	private async Task DeleteClicked(DepartamentoGeral dep)
 	{
-		if(flag) 	
+		bool confirm = await dialogService.ConfirmAsync("Você tem certeza que deseja excluir este departamento?", "Confirmação de Exclusão");
+		if (!confirm)
+			return;
+
+		var response = await generalDepartmentService.DeleteById(dep.Id, Constants.GeneralDepartmentBaseUrl);
+
+
+
+		if (await DisplayMessage(response.Flag, response.Message))
+			await GetGeneralDepartments();
+
+	}
+
+	private async Task<bool> DisplayMessage(bool flag, string message)
+	{
+		if (flag)
 		{
 			await dialogService.AlertAsync(message, "Operação Com Sucesso");
 			return true;
 		}
-		else 
+		else
 		{
 			await dialogService.AlertAsync(message, "Alerta");
 			return false;

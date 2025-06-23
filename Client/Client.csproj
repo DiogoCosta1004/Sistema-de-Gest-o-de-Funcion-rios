@@ -12,6 +12,8 @@
 	  <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.5" />
 	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.11" PrivateAssets="all" />
+    <PackageReference Include="Syncfusion.Blazor.Buttons" Version="23.1.38" />
+	 <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="23.1.36" />
     <PackageReference Include="Syncfusion.Blazor.Popups" Version="23.1.38" />
     <PackageReference Include="Syncfusion.Blazor.SplitButtons" Version="23.1.38" />
     <PackageReference Include="Syncfusion.Blazor.Themes" Version="23.1.38" />
