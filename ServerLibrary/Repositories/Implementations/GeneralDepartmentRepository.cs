@@ -25,10 +25,13 @@ namespace ServerLibrary.Repositories.Implementations
 
         public async Task<GeneralResponse> Insert(DepartamentoGeral item)
         {
-            var checkIfNull = await CheckName(item.Nome);
-            if (checkIfNull)
+            var existingItem = await appDbContext.DepartamentosGerais.FirstOrDefaultAsync(x => x.Nome!.ToLower().Equals(item.Nome.ToLower()));
+            if (existingItem != null) 
+            {
                 return new GeneralResponse(false, "Departamento geral já cadastrado");
+            }
 
+            appDbContext.DepartamentosGerais.Add(item);
             await Commit();
             return Success();
         }
@@ -47,10 +50,10 @@ namespace ServerLibrary.Repositories.Implementations
         private static GeneralResponse NotFound() => new(false, "Departamento geral não encontrado");
         private static GeneralResponse Success() => new(true, "Processo completado");
         private async Task Commit() => await appDbContext.SaveChangesAsync();
-        private async Task<bool> CheckName(string name)
-        {
-            var item = await appDbContext.DepartamentosGerais.FirstOrDefaultAsync(x => x.Nome!.ToLower().Equals(name.ToLower()));
-            return item is null;
-        }
+        //private async Task<bool> CheckName(string name)
+        //{
+        //    var item = await appDbContext.DepartamentosGerais.FirstOrDefaultAsync(x => x.Nome!.ToLower().Equals(name.ToLower()));
+        //    return item is null;
+        //}
     }
 }
